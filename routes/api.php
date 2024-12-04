@@ -1,13 +1,17 @@
 <?php
 
-use App\Http\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\ContactFormController;
 
 // Open Routes
 Route::post("register", [ApiController::class, "register"]);
 Route::post("login", [ApiController::class, "login"]);
 Route::post('forgot-password', [ApiController::class, 'forgotPassword']);
 Route::post('reset-password', [ApiController::class, 'resetPassword']);
+
+Route::post('/contact-form', [ContactFormController::class, 'submit']);
+
 
 
 // Protected Routes

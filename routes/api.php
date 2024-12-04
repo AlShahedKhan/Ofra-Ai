@@ -11,6 +11,7 @@ Route::post('forgot-password', [ApiController::class, 'forgotPassword']);
 Route::post('reset-password', [ApiController::class, 'resetPassword']);
 
 Route::post('/contact-form', [ContactFormController::class, 'submit']);
+// Route::get('/contact-show', [ContactFormController::class, 'show']);
 
 
 
@@ -21,4 +22,8 @@ Route::group([
     Route::get("profile", [ApiController::class, "profile"]);
     Route::get("refresh-token", [ApiController::class, "refreshToken"]);
     Route::get("logout", [ApiController::class, "logout"]);
+
+    Route::get('/contact', [ContactFormController::class, 'index']);
+    Route::get('/contact-show/{id}', [ContactFormController::class, 'show']);
+    Route::delete('/contact-delete/{id}', [ContactFormController::class, 'destroy']);
 });

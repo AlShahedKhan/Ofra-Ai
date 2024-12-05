@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\ContactFormController;
 
 // Open Routes
@@ -12,6 +14,8 @@ Route::post('reset-password', [ApiController::class, 'resetPassword']);
 
 Route::post('/contact-form', [ContactFormController::class, 'submit']);
 // Route::get('/contact-show', [ContactFormController::class, 'show']);
+
+Route::post('/chat', [ChatbotController::class, 'handleChat']);
 
 
 
@@ -26,4 +30,6 @@ Route::group([
     Route::get('/contact', [ContactFormController::class, 'index']);
     Route::get('/contact-show/{id}', [ContactFormController::class, 'show']);
     Route::delete('/contact-delete/{id}', [ContactFormController::class, 'destroy']);
+
+    Route::apiResource('blogs', BlogController::class);
 });

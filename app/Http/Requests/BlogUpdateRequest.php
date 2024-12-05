@@ -22,13 +22,13 @@ class BlogUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'sometimes|string|max:255',
-            'content' => 'sometimes|string',
-            'author' => 'sometimes|string|max:255',
-            'status' => 'sometimes|string|in:draft,published',
-            'tags' => 'nullable|string',
-            'published_at' => 'nullable|date',
-            'image' => 'nullable|image|max:2048',
+            'title' => 'sometimes|required|string|max:255',
+            'content' => 'sometimes|required|string',
+            'author' => 'sometimes|required|string|max:255',
+            'status' => 'sometimes|required|string',
+            'tags' => 'sometimes|nullable|string',
+            'published_at' => 'sometimes|nullable|date',
+            'image' => 'sometimes|nullable|image|max:2048',
         ];
     }
 }

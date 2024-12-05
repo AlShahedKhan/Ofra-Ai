@@ -7,6 +7,7 @@ use App\Http\Requests\BlogUpdateRequest;
 use App\Models\Blog;
 use App\Traits\HandlesApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BlogController extends Controller
 {
@@ -57,30 +58,73 @@ class BlogController extends Controller
         });
     }
 
-    public function update(BlogUpdateRequest $request, $id)
+    public function update(Request $request, Blog $blog)
     {
-        return $this->safeCall(function () use ($request, $id) {
-            // Retrieve validated data from BlogUpdateRequest
-            $validated = $request->validated();
+        \Log::info('Update Request Data:', $request->all());
 
-            // Find the blog or fail if not found
-            $blog = Blog::findOrFail($id);
+        try {
+            // Validate the incoming request
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'content' => 'required|string',
+                'author' => 'required|string|max:255',
+                'status' => 'in:draft,published',
+                'tags' => 'nullable|string',
+                'published_at' => 'nullable|date',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
-            // Handle image upload if a new image is provided
+            // Update the blog fields
+            $blog->update([
+                'title' => $request->input('title'),
+                'content' => $request->input('content'),
+                'author' => $request->input('author'),
+                'status' => $request->input('status', 'draft'),
+                'tags' => $request->input('tags'),
+                'published_at' => $request->input('published_at'),
+            ]);
+
+            // Handle the image file
             if ($request->hasFile('image')) {
-                $validated['image'] = $request->file('image')->store('images', 'public');
+                // Delete the old image if it exists
+                if ($blog->image) {
+                    $oldImagePath = storage_path("app/public/images/{$blog->image}");
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                    }
+                }
+
+                // Save the new image
+                $destinationPath = storage_path('app/public/images');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
+
+                $fileName = time() . '_' . $request->file('image')->getClientOriginalName();
+                $request->file('image')->move($destinationPath, $fileName);
+
+                // Update the image path in the database
+                $blog->update([
+                    'image' => $fileName,
+                ]);
             }
 
-            // Update the blog with validated data
-            $blog->update($validated);
-
-            // Return a success response
-            return $this->successResponse(
-                'Blog updated successfully',
-                ['blog' => $blog]
-            );
-        });
+            return response()->json([
+                'message' => 'Blog updated successfully',
+                'blog' => $blog,
+            ], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Blog not found.',
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while updating the blog.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
 
     public function destroy($id)

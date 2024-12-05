@@ -33,6 +33,8 @@ Route::group([
     Route::get('/contact-show/{id}', [ContactFormController::class, 'show']);
     Route::delete('/contact-delete/{id}', [ContactFormController::class, 'destroy']);
 
+    Route::post('/blogs/{blog}', [BlogController::class, 'update']);
+
     Route::apiResource('blogs', BlogController::class);
 
     Route::apiResource('testimonials', TestimonialController::class);

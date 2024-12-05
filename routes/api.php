@@ -14,7 +14,8 @@ Route::post('forgot-password', [ApiController::class, 'forgotPassword']);
 Route::post('reset-password', [ApiController::class, 'resetPassword']);
 
 Route::post('/contact-form', [ContactFormController::class, 'submit']);
-// Route::get('/contact-show', [ContactFormController::class, 'show']);
+
+Route::post('/contact-form-send', [ContactFormController::class, 'submitSend']);
 
 Route::post('/chat', [ChatbotController::class, 'handleChat']);
 
@@ -35,5 +36,4 @@ Route::group([
     Route::apiResource('blogs', BlogController::class);
 
     Route::apiResource('testimonials', TestimonialController::class);
-
 });

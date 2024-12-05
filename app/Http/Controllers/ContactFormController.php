@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ContactFormRequest;
 use App\Models\ContactForm;
+use App\Mail\ContactFormMail;
 use App\Traits\HandlesApiResponse;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Requests\ContactFormRequest;
 
 class ContactFormController extends Controller
 {
@@ -13,12 +15,12 @@ class ContactFormController extends Controller
     public function index()
     {
         return $this->safeCall(function () {
-           $data = ContactForm::all();
+            $data = ContactForm::all();
 
-           return $this->successResponse(
-               'Contact form data',
-               ['data' => $data]
-           );
+            return $this->successResponse(
+                'Contact form data',
+                ['data' => $data]
+            );
         });
     }
 
@@ -37,6 +39,22 @@ class ContactFormController extends Controller
             return $this->successResponse(
                 'Your query has been submitted successfully!',
                 ['data' => $data]
+            );
+        });
+    }
+
+    public function submitSend(ContactFormRequest $request)
+    {
+        return $this->safeCall(function () use ($request) {
+            // Save the contact form data to the database
+            $data = ContactForm::create($request->all());
+
+            // Send the email
+            Mail::to($request->email)->send(new ContactFormMail($data));
+
+            return $this->successResponse(
+                'Form submitted successfully and email sent to the provided address.',
+                ['contact_form' => $data]
             );
         });
     }
@@ -82,6 +100,4 @@ class ContactFormController extends Controller
             );
         });
     }
-
-
 }

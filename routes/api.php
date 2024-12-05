@@ -5,6 +5,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\ContactFormController;
+use App\Http\Controllers\TestimonialController;
 
 // Open Routes
 Route::post("register", [ApiController::class, "register"]);
@@ -32,4 +33,7 @@ Route::group([
     Route::delete('/contact-delete/{id}', [ContactFormController::class, 'destroy']);
 
     Route::apiResource('blogs', BlogController::class);
+
+    Route::apiResource('testimonials', TestimonialController::class);
+
 });

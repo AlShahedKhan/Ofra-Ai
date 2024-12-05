@@ -19,7 +19,6 @@ Route::post('/contact-form-send', [ContactFormController::class, 'submitSend']);
 
 Route::post('/chat', [ChatbotController::class, 'handleChat']);
 
-Route::apiResource('blogs', BlogController::class);
 
 
 // Protected Routes
@@ -34,6 +33,7 @@ Route::group([
     Route::get('/contact-show/{id}', [ContactFormController::class, 'show']);
     Route::delete('/contact-delete/{id}', [ContactFormController::class, 'destroy']);
 
+    Route::apiResource('blogs', BlogController::class);
 
     Route::apiResource('testimonials', TestimonialController::class);
 });

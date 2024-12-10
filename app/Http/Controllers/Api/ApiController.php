@@ -14,13 +14,13 @@ class ApiController extends Controller
 {
     use HandlesApiResponse;
     use AuthTrait;
-    // Register API [POST] (name, email, password, phone_no)
     public function register(RegisterRequest $request)
     {
         return $this->safeCall(function () use ($request) {
             // User
             $user = User::create([
-                "name" => $request->name,
+                "first_name" => $request->first_name,
+                "last_name" => $request->last_name,
                 "email" => $request->email,
                 "password" => bcrypt($request->password),
             ]);

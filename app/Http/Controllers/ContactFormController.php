@@ -78,6 +78,30 @@ class ContactFormController extends Controller
         });
     }
 
+    public function update(ContactFormRequest $request, $id)
+    {
+        return $this->safeCall(function () use ($request, $id) {
+            // Find the contact entry by ID
+            $contact = ContactForm::find($id);
+
+            // Check if the entry exists
+            if (!$contact) {
+                return $this->errorResponse(
+                    'No contact found with the given ID',
+                    404
+                );
+            }
+
+            // Update the contact entry
+            $contact->update($request->all());
+
+            return $this->successResponse(
+                'Contact updated successfully',
+                ['data' => $contact]
+            );
+        });
+    }
+
     public function destroy($id)
     {
         return $this->safeCall(function () use ($id) {

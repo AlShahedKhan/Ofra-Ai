@@ -43,19 +43,18 @@ trait HandlesApiResponse
             'status' => false,
             'message' => $message,
             'status_code' => $status,
-            'error' => app()->environment('production')? null : $debugMessage, // show detailed error message only in production
+            'error' => app()->environment('production') ? null : $debugMessage, // show detailed error message only in production
         ], $status);
     }
 
     // For logging errors
     public function logError(\Throwable $e): void
     {
-        Log::error('Exception caught: ',[
+        Log::error('Exception caught: ', [
             'message' => $e->getMessage(),
             'file' => $e->getFile(),
             'line' => $e->getLine(),
             'trace' => $e->getTraceAsString()
         ]);
     }
-
 }

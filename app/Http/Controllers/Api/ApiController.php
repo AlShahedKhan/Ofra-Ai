@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Traits\AuthTrait;
 use App\Traits\HandlesApiResponse;
+use App\Http\Requests\LoginRequest;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\RegisterRequest;
 
 class ApiController extends Controller
 {
@@ -50,15 +52,34 @@ class ApiController extends Controller
                 );
             }
 
+            // Set user status to active and update the last login time
+            $user->update([
+                'status' => 'active',
+                'last_login_at' => now(),
+            ]);
+
+            // Refresh the user instance to get the latest data
+            $user = $user->fresh();
+
             // Generate auth token
             $token = $user->createToken('myToken')->accessToken;
 
             return $this->successResponse(
-                'User logged in successfully',
-                ['token' => $token],
+                'User logged in successfully.',
+                [
+                    'token' => $token,
+                    'user' => [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'status' => $user->status,
+                        'last_login_at' => $user->last_login_at,
+                    ]
+                ]
             );
         });
     }
+
+
 
     // Profile API (GET) (Auth Token - Header)
 
@@ -74,6 +95,4 @@ class ApiController extends Controller
             );
         });
     }
-
-
 }

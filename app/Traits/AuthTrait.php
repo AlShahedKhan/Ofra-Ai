@@ -2,22 +2,27 @@
 
 namespace App\Traits;
 
+use Carbon\Carbon;
 use App\Models\User;
+use App\Mail\OtpMail;
 use Ichtrojan\Otp\Otp;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\ForgotPasswordRequest;
-use App\Mail\OtpMail;
-use Illuminate\Support\Facades\Mail;
 
 
 
 trait AuthTrait
 {
     use HandlesApiResponse;
+    use AdminAuthGetTrait;
+
     public function profile()
     {
         return $this->safeCall(function () {
@@ -75,7 +80,6 @@ trait AuthTrait
         });
 
         return $this->errorResponse('Failed to generate OTP.', 500);
-
     }
 
     /**
